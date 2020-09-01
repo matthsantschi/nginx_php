@@ -1,0 +1,25 @@
+web:
+  image: nginx:latest
+  ports:
+    - "8080:80"
+  volumes:
+    - ../meteotest/strassenwetter/:/code
+    - ./nginx.conf:/etc/nginx/conf.d/default.conf
+  links:
+    - php
+    - redis
+
+php:
+  build: .
+  volumes: 
+    - ../meteotest/strassenwetter/:/code
+  ports: 
+    - "3306:3306"
+    - "33060:33060"
+  environment:
+    XDEBUG_CONFIG: remote_host=host.docker.internal
+  links: 
+    - redis
+
+redis:
+  image: redis
